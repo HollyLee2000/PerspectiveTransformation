@@ -254,7 +254,8 @@ class ImagePerspective:
         cv2.imshow("image", image)
         pts1 = []
         pts2 = []
-        cv2.setMouseCallback("image", self.mouse, param=(image, pts1, pts2))
+        image_copy = image.copy()
+        cv2.setMouseCallback("image", self.mouse, param=(image_copy, pts1, pts2))
         
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -268,10 +269,10 @@ class ImagePerspective:
         # 生成透视变换矩阵
         M = cv2.getPerspectiveTransform(pts1, pts2)
         # 进行透视变换
-        dst = cv2.warpPerspective(image, M, (image.shape[1], image.shape[0]))
+        dst = cv2.warpPerspective(image_copy, M, (image_copy.shape[1], image_copy.shape[0]))
         cv2.imwrite('dst.jpg', dst)
         # matplotlib默认以RGB通道显示，所以需要用[:, :, ::-1]翻转一下
-        plt.subplot(121), plt.imshow(image[:, :, ::-1]), plt.title('input')
+        plt.subplot(121), plt.imshow(image_copy[:, :, ::-1]), plt.title('input')
         plt.subplot(122), plt.imshow(dst[:, :, ::-1]), plt.title('output')
         plt.show()
 
